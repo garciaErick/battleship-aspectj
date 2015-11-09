@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_battleship" default="compile.module.battleship">
+  <dirname property="module.battleship.basedir" file="${ant.file.module_battleship}"/>
+  
+  <property name="module.jdk.home.battleship" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.battleship" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.battleship" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.battleship" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="battleship.output.dir" value="${module.battleship.basedir}/out/production/Battleship"/>
+  <property name="battleship.testoutput.dir" value="${module.battleship.basedir}/out/test/Battleship"/>
+  
+  <path id="battleship.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="battleship.module.production.classpath">
+    <path refid="${module.jdk.classpath.battleship}"/>
+    <path refid="library.aspectjtools.classpath"/>
+    <path refid="library.aspectjweaver.classpath"/>
+    <path refid="library.aspectjrt.classpath"/>
+    <path refid="library.battleship.classpath"/>
+  </path>
+  
+  <path id="battleship.runtime.production.module.classpath">
+    <pathelement location="${battleship.output.dir}"/>
+    <path refid="library.aspectjtools.classpath"/>
+    <path refid="library.aspectjweaver.classpath"/>
+    <path refid="library.aspectjrt.classpath"/>
+    <path refid="library.battleship.classpath"/>
+  </path>
+  
+  <path id="battleship.module.classpath">
+    <path refid="${module.jdk.classpath.battleship}"/>
+    <pathelement location="${battleship.output.dir}"/>
+    <path refid="library.aspectjtools.classpath"/>
+    <path refid="library.aspectjweaver.classpath"/>
+    <path refid="library.aspectjrt.classpath"/>
+    <path refid="library.battleship.classpath"/>
+  </path>
+  
+  <path id="battleship.runtime.module.classpath">
+    <pathelement location="${battleship.testoutput.dir}"/>
+    <pathelement location="${battleship.output.dir}"/>
+    <path refid="library.aspectjtools.classpath"/>
+    <path refid="library.aspectjweaver.classpath"/>
+    <path refid="library.aspectjrt.classpath"/>
+    <path refid="library.battleship.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.battleship">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.battleship">
+    <patternset refid="excluded.from.module.battleship"/>
+  </patternset>
+  
+  <path id="battleship.module.sourcepath">
+    <dirset dir="${module.battleship.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.battleship" depends="compile.module.battleship.production,compile.module.battleship.tests" description="Compile module Battleship"/>
+  
+  <target name="compile.module.battleship.production" depends="register.custom.compilers" description="Compile module Battleship; production classes">
+    <mkdir dir="${battleship.output.dir}"/>
+    <javac2 destdir="${battleship.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.battleship}/javac">
+      <compilerarg line="${compiler.args.battleship}"/>
+      <bootclasspath refid="battleship.module.bootclasspath"/>
+      <classpath refid="battleship.module.production.classpath"/>
+      <src refid="battleship.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.battleship"/>
+    </javac2>
+    
+    <copy todir="${battleship.output.dir}">
+      <fileset dir="${module.battleship.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.battleship.tests" depends="register.custom.compilers,compile.module.battleship.production" description="compile module Battleship; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.battleship" description="cleanup module">
+    <delete dir="${battleship.output.dir}"/>
+    <delete dir="${battleship.testoutput.dir}"/>
+  </target>
+</project>
